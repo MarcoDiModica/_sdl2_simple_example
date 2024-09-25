@@ -2,8 +2,11 @@
 #include <chrono>
 #include <thread>
 #include <exception>
+#include <iostream>
+#include <fstream>
 #include <glm/glm.hpp>
 #include <SDL2/SDL_events.h>
+#include <json/json.h>
 #include "MyWindow.h"
 using namespace std;
 
@@ -32,9 +35,9 @@ static void draw_triangle(const u8vec4& color, const vec3& center, double size) 
 	glEnd();
 }
 
-static void display_func() {
+static void display_func(u8vec4 color, vec3 center, double size) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	draw_triangle(u8vec4(255, 0, 0, 255), vec3(0.0, 0.0, 0.0), 0.5);
+	draw_triangle(color, center, size);
 }
 
 static bool processEvents() {
@@ -53,9 +56,26 @@ int main(int argc, char** argv) {
 
 	init_openGL();
 
+	Json::Value root;
+	ifstream ifs("datos.json");
+	ifs >> root;
+
+	u8vec4 color;
+	color.r = root["color"]["r"].asUInt();
+	color.g = root["color"]["g"].asUInt();
+	color.b = root["color"]["b"].asUInt();
+	color.a = root["color"]["a"].asUInt();
+
+	vec3 center;
+	center.x = root["center"]["x"].asDouble();
+	center.y = root["center"]["y"].asDouble();
+	center.z = root["center"]["z"].asDouble();
+
+	double size = root["size"].asDouble();
+
 	while (processEvents()) {
 		const auto t0 = hrclock::now();
-		display_func();
+		display_func(color, center, size);
 		window.swapBuffers();
 		const auto t1 = hrclock::now();
 		const auto dt = t1 - t0;

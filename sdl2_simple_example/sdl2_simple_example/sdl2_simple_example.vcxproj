@@ -133,6 +133,9 @@
   <ItemGroup>
     <ClInclude Include="MyWindow.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="datos.json" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
